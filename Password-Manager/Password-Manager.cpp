@@ -62,7 +62,20 @@ class Account{
     	void toString(){
     		cout << "================\nAccount Name : " << name << "\nAccount Email : " << email << "\nAccount Password : " << password <<  "\nAdditional info : " << info;
 		}
-		
+	
+	//Method that returns a string of all variables	
+		string returnString(){
+			string S = "Account Name : ";
+			S = S + name;
+			S = S + "\nAccount Email : ";
+			S = S + email;
+			S = S + "\nAccount Password : ";
+			S = S + password;
+			S = S + "\nAdditional info : ";
+			S = S + info;
+			S = S + "\n================";
+			return S;
+		}
 	//Method that creates a password with at least one ascii symbol, ascii uppercase, ascii lowercase, ascii number in it
 		std::string passwordGenerator(){
 		int n = 26;
@@ -108,11 +121,14 @@ class Account{
     	bool flag3 = false;
     	bool flag4 = false;
     
+    //Creates password and makes sure there is at least one numbers, capitals, smallLetters and characters
 		do{
+			//Creates password
     		for (int i = 0; i < n; i++){
     			password = password + ascii[rand() % MAX];	
 			}
 		
+			//Makes sure there is at least one numbers, capitals, smallLetters and characters
 			for (int l = 0; l<sizeof password; l++){
 				for (int k =0; k < MIN; k++){
 					if(password[l] == numbers[k]){
@@ -149,70 +165,66 @@ class Account{
 		}
 };
 
-void createTxtFile(){
-	std::string fileName;
-	
-	cout<<"Name of the new file (For example 'TestFile1') : ";
-	cout <<"\n> ";
-	cin >> fileName;
+void createTxtFile(string fileName){
 	fileName = fileName + ".txt";
-	
+	cout<<fileName;
 	ofstream MyWriteFile(fileName);
+	MyWriteFile.close();
 }
 
-void viewAccount(string fileName){
-	//std::string fileName;
+void viewAccounts(string fileName){
+	cout << "=========== " << fileName << " Contents =========== \n\n";
 	
-	cout<<"Name of the file to see the accounts (For example 'TestFile1') : ";
-	cout <<"\n> ";
-	cin >> fileName;
 	fileName = fileName + ".txt";
 	
 	ifstream MyReadFile(fileName);
 	string myText;
-	cout << "===========" << fileName << " Contents=========== \n\n";
+	string fileContent;
 	while (getline (MyReadFile, myText)) {
-    cout<< myText;
+   		fileContent = fileContent + myText +"\n";
+  	}
+    cout<<fileContent;
     cout<<"\n";
-	}
 }
 
 void addAccount(Account a){
-//Account a();
-	
 	string fileName;
 	string accountName;
 	string accountEmail;
 	string accountPassword;
 	string accountInfo;
 	
-	cout<<"Name of the file the account info will be stored (For example 'TestFile1') :";
+	cout<<"File name :";
 	cout<<"\n> ";
 	cin >> fileName;
-	viewAccount(fileName);
+	viewAccounts(fileName);
+
 	
-	cout<<"Account name (Make sure to name different accounts on the same service with different names for example 'Twitter2' if you already have stored another Twitter account stored) :"; //Na valo na tsekari oti pragmati den yparxei allos lograriasmos me to idio onoma
+	cout<<"Account name (For example 'Facebook') :"; //Na valo na tsekari oti pragmati den yparxei allos lograriasmos me to idio onoma
 	cout<<"\n> ";
 	cin >> accountName;
+	a.setName(accountName);
 	
 	cout<<"Account email or phone number : ";
 	cout<<"\n> ";
 	cin >> accountEmail;
+	a.setEmail(accountEmail);
 	
-	int n;
+	int n = 0;
 	do{
-		accountPassword = a.passwordGenerator();
-		cout<<"Do you wish to keep this password : " << accountPassword;
-		cout<<"\n 1. Yes 2. No 3. Set your own password";
+		a.setPassword(a.passwordGenerator());
+		cout<<"Do you wish to keep this password : " << a.getPassword();
+		cout<<"\n1. Yes 2. No 3. Set your own password";
 		cout<<"\n> ";
 		cin >> n;
 		
-		if (n = 3){
-			cout << "\nSet your password :";
+		if (n == 3){
+			cout << "Set your password :";
 			cout << "\n> ";
 			cin >> accountPassword;
-			cout<<"Do you wish to keep this password : " << accountPassword;
-			cout<<"\n 1. Yes 2. No";
+			a.setPassword(accountPassword);
+			cout<<"Do you wish to keep this password : " << a.getPassword();
+			cout<<"\n1. Yes 2. No";
 			cout<<"\n> ";
 			cin >> n;
 		}
@@ -222,21 +234,36 @@ void addAccount(Account a){
 	cout<<"Any more info :";
 	cout<<"\n> ";
 	cin >> accountInfo;
+	a.setInfo(accountInfo);
 	
+	//Read from file and copy its contents on fileContent string
+	fileName = fileName + ".txt";
 	ifstream MyReadFile(fileName);
 	string myText;
 	string fileContent;
 	while (getline (MyReadFile, myText)) {
    		 fileContent = fileContent + myText +"\n";
   	}
-  	fileContent = fileContent + a.toString();
-	MyWriteFile (fileContent);
+  	MyReadFile.close();
+  	
+  	//Add on fileContent the account variables
+  	fileContent = fileContent + a.returnString();
+  	
+  	//Write on file the fileContent
+  	ofstream MyWriteFile(fileName);
+	MyWriteFile << fileContent;
 	MyWriteFile.close();
+	
+	//Remove .txt from fileName so I can use viewAccounts function again cause viewAccounts adds .txt at the end of fileName
+	if (!fileName.empty()) {
+        fileName.resize(fileName.size() - 4);
+    }
+    viewAccounts(fileName);
 }
 
 int main(){
-	Account a();
-	addAccount();
+	Account a1;
+	addAccount(a1);
 	return 0;
 }
 
