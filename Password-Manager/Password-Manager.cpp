@@ -261,9 +261,54 @@ void addAccount(Account a){
     viewAccounts(fileName);
 }
 
+void menu(){
+    int n = 0;
+    string fileName;
+    Account a1;
+    
+	do{
+        cout <<"\n\n**************** PASSWORD MANAGER ****************\n";
+        cout <<"\n\t=========== MENU ===========";
+        cout <<"\n\t1. View Accounts \n\t2. Add Account \n\t3. Edit Account \n\t4. Remove Account \n\t5. About \n\t6. Exit";
+        cout<<"\n\t>";
+        cin >> n;
+
+        switch (n){
+            case 1:
+            	cout<<"File name :";
+				cout<<"\n> ";
+				cin >> fileName;
+				viewAccounts(fileName);
+                break;
+            case 2:
+                addAccount(a1);
+                break;
+            case 3:
+                cout<<"\nComing soon!";
+                break;
+            case 4:
+            	cout<<"\nComing soon!";
+                break;
+            case 5:
+            	cout << "\n\n";
+            	cout <<"\n+----------------------------------------------------------+";
+            	//cout <<"\n==========================================================";
+            	cout <<"\n\t\t\t -ABOUT-\n";
+                cout <<"\n\t   Created by Constantine Giantselidis";
+                cout <<"\n";
+                cout <<"\n\t\t       Student of";
+                cout <<"\n\t     Department of Information and";
+            	cout <<"\n\t     Electronic Engineering | IHU";
+            	cout << "\n\t\t\t @2022";
+            	cout <<"\n+----------------------------------------------------------+";
+                cout << "\n\n";
+                break;
+        }
+    }while(n != 6);
+}
+
 int main(){
-	Account a1;
-	addAccount(a1);
+	menu();
 	return 0;
 }
 
