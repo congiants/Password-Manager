@@ -1,3 +1,11 @@
+//*********************************************
+//Created by Constantine Giantselidis
+//Student of 
+//Department of Information and Electronic Engineering
+//International Hellenic University
+//@ 2022
+//*********************************************
+
 #include <iostream>
 #include <string>
 #include <cstdlib>
@@ -77,7 +85,7 @@ class Account{
 			return S;
 		}
 	//Method that creates a password with at least one ascii symbol, ascii uppercase, ascii lowercase, ascii number in it
-		std::string passwordGenerator(){
+		string passwordGenerator(){
 		int n = 26;
 	    srand(time(0));
   		char ascii[MAX] = { '!', '"', '#', '$', '%', '&',
@@ -94,8 +102,8 @@ class Account{
 						  'm', 'n', 'o', 'p', 'q', 's', 't', 'u', 'v', 'w', 'x',
 						  'x', 'y', 'z', '{', '|', '}', '~'};
 						  
-    	char numbers [MIN] = {'0', '1', '2', '3', '5',
-		                    '6', '7', '8', '9'};
+    	char numbers [MIN] = {'0', '1', '2', '3', '4', 
+							'5','6', '7', '8', '9'};
 		                    
 		char capitals [MID] = {'A', 'B', 'C',
 						  'D', 'E', 'F', 'G', 'H', 'I', 'J',
@@ -165,6 +173,7 @@ class Account{
 		}
 };
 
+//Creates a txt file on the directory that the excecutable of the program is
 void createTxtFile(string fileName){
 	fileName = fileName + ".txt";
 	cout<<fileName;
@@ -172,11 +181,13 @@ void createTxtFile(string fileName){
 	MyWriteFile.close();
 }
 
+//Takes input the name of a txt file (i.e. testFile) and showcases the files content
 void viewAccounts(string fileName){
 	cout << "=========== " << fileName << " Contents =========== \n\n";
 	
 	fileName = fileName + ".txt";
 	
+	//Goes line by line in the file and prints what is written
 	ifstream MyReadFile(fileName);
 	string myText;
 	string fileContent;
@@ -187,6 +198,7 @@ void viewAccounts(string fileName){
     cout<<"\n";
 }
 
+//Either creates a new txt file or on an already existing txt file, it adds a new account
 void addAccount(Account a){
 	string fileName;
 	string accountName;
@@ -194,18 +206,20 @@ void addAccount(Account a){
 	string accountPassword;
 	string accountInfo;
 	
-	cout<<"File name :";
+	//Input of the account variables
+	
+	cout<<"\nFile name :";
 	cout<<"\n> ";
 	cin >> fileName;
+	cout<<"\n";
 	viewAccounts(fileName);
-
 	
-	cout<<"Account name (For example 'Facebook') :"; //Na valo na tsekari oti pragmati den yparxei allos lograriasmos me to idio onoma
+	cout<<"\nAccount name (For example 'Facebook') :"; //Na valo na tsekari oti pragmati den yparxei allos lograriasmos me to idio onoma
 	cout<<"\n> ";
 	cin >> accountName;
 	a.setName(accountName);
 	
-	cout<<"Account email or phone number : ";
+	cout<<"\nAccount email or phone number : ";
 	cout<<"\n> ";
 	cin >> accountEmail;
 	a.setEmail(accountEmail);
@@ -213,25 +227,24 @@ void addAccount(Account a){
 	int n = 0;
 	do{
 		a.setPassword(a.passwordGenerator());
-		cout<<"Do you wish to keep this password : " << a.getPassword();
+		cout<<"\nDo you wish to keep this password : " << a.getPassword();
 		cout<<"\n1. Yes 2. No 3. Set your own password";
 		cout<<"\n> ";
 		cin >> n;
 		
 		if (n == 3){
-			cout << "Set your password :";
+			cout << "\nSet your password :";
 			cout << "\n> ";
 			cin >> accountPassword;
 			a.setPassword(accountPassword);
-			cout<<"Do you wish to keep this password : " << a.getPassword();
+			cout<<"\nDo you wish to keep this password : " << a.getPassword();
 			cout<<"\n1. Yes 2. No";
 			cout<<"\n> ";
 			cin >> n;
 		}
-		
 	}while(n != 1 );
 	
-	cout<<"Any more info :";
+	cout<<"\nAny more info :";
 	cout<<"\n> ";
 	cin >> accountInfo;
 	a.setInfo(accountInfo);
@@ -258,21 +271,22 @@ void addAccount(Account a){
 	if (!fileName.empty()) {
         fileName.resize(fileName.size() - 4);
     }
+    cout<<"\n";
     viewAccounts(fileName);
 }
 
 void about(){
 	cout << "\n\n";
-    cout <<"\n+----------------------------------------------------------+";
-    cout <<"\n\t\t\t -ABOUT-\n";
-    cout <<"\n\t   Created by Constantine Giantselidis";
-    cout <<"\n";
-    cout <<"\n\t\t       Student of";
-    cout <<"\n\t     Department of Information and";
-    cout <<"\n\t     Electronic Engineering | IHU";
-    cout << "\n\t\t\t @2022";
 	cout <<"\n+----------------------------------------------------------+";
-    cout << "\n\n";
+	cout <<"\n\t\t\t -ABOUT-\n";
+	cout <<"\n\t   Created by Constantine Giantselidis";
+	cout <<"\n";
+	cout <<"\n\t\t       Student of";
+	cout <<"\n\t     Department of Information and";
+    	cout <<"\n\t     Electronic Engineering | IHU";
+    	cout << "\n\t\t\t @2022";
+	cout <<"\n+----------------------------------------------------------+";
+    	cout << "\n\n";
 }
 
 void menu(){
@@ -292,17 +306,18 @@ void menu(){
             case 1:
             	cout<<"\nFile name :";
 		cout<<"\n> ";
-		cin >> fileName;				
+		cin >> fileName;
+		cout<<"\n";				
 		viewAccounts(fileName);
                 break;
             case 2:
                 addAccount(a1);
                 break;
             case 3:
-                cout<<"\nComing soon!";
+                cout<<"\nComing soon!\n\n";
                 break;
             case 4:
-            	cout<<"\nComing soon!";
+            	cout<<"\nComing soon!\n\n";
                 break;
             case 5:
             	about();
@@ -311,7 +326,7 @@ void menu(){
             	flag = false;
                 break;
             default:
-            	cout << "\nInvalid choice.\n";
+            	cout <<"\nInvalid choice.\n";
             	cin.clear();
 		cin.get();
         	menu();
@@ -320,16 +335,7 @@ void menu(){
     }
 }
 
-int main(){
+int main (int argc, char*argv[]){
 	menu();
 	return 0;
 }
-
-/*Account a1("name", "email", "password", "info");
-	a1.toString();
-	printf("\n\n");
-	a1.setPassword(a1.passwordGenerator());
-	a1.toString();
-	cout<<"\n";
-	createTxtFile();
-	viewAccount();*/
