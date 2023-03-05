@@ -198,6 +198,26 @@ void viewAccounts(string fileName){
     cout<<"\n";
 }
 
+//Auxiliary function that shows if a string exists in a txt file
+bool findStringInFile(string filename, string str) {
+    ifstream file(filename);
+
+    if (file.is_open()) {
+        string line;
+        while (getline(file, line)) {
+            if (line.find(str) != string::npos) {
+                file.close();
+                return true;
+            }
+        }
+        file.close();
+    } else {
+        cout << "Unable to open file." << endl;
+    }
+
+    return false;
+}
+
 //Either creates a new txt file or on an already existing txt file, it adds a new account
 void addAccount(Account a){
 	string fileName;
@@ -207,73 +227,81 @@ void addAccount(Account a){
 	string accountInfo;
 	
 	//Input of the account variables
-	
-	cout<<"\nFile name :";
+	cout<<"\nFile name (For example 'fileName'):";
 	cout<<"\n> ";
 	cin >> fileName;
 	cout<<"\n";
 	viewAccounts(fileName);
 	
-	cout<<"\nAccount name (For example 'Facebook') :"; //Na valo na tsekari oti pragmati den yparxei allos lograriasmos me to idio onoma
+	cout<<"\nAccount name (For example 'Facebook') :";
 	cout<<"\n> ";
 	cin >> accountName;
-	a.setName(accountName);
-	
-	cout<<"\nAccount email or phone number : ";
-	cout<<"\n> ";
-	cin >> accountEmail;
-	a.setEmail(accountEmail);
-	
-	int n = 0;
-	do{
-		a.setPassword(a.passwordGenerator());
-		cout<<"\nDo you wish to keep this password : " << a.getPassword();
-		cout<<"\n1. Yes 2. No 3. Set your own password";
+	string txtLine = "Account Name : " + accountName;
+	string txtFileName = fileName + ".txt";
+	//If there isnt an account with the same name then proceed
+	if (findStringInFile(txtFileName, txtLine) == false){
+		a.setName(accountName);
+		cout<<"\nAccount email or phone number : ";
 		cout<<"\n> ";
-		cin >> n;
+		cin >> accountEmail;
+		a.setEmail(accountEmail);
 		
-		if (n == 3){
-			cout << "\nSet your password :";
-			cout << "\n> ";
-			cin >> accountPassword;
-			a.setPassword(accountPassword);
+		int n = 0;
+		do{
+			a.setPassword(a.passwordGenerator());
 			cout<<"\nDo you wish to keep this password : " << a.getPassword();
-			cout<<"\n1. Yes 2. No";
+			cout<<"\n1. Yes 2. No 3. Set your own password";
 			cout<<"\n> ";
 			cin >> n;
-		}
-	}while(n != 1 );
-	
-	cout<<"\nAny more info :";
-	cout<<"\n> ";
-	cin >> accountInfo;
-	a.setInfo(accountInfo);
-	
-	//Read from file and copy its contents on fileContent string
-	fileName = fileName + ".txt";
-	ifstream MyReadFile(fileName);
-	string myText;
-	string fileContent;
-	while (getline (MyReadFile, myText)) {
-   		 fileContent = fileContent + myText +"\n";
-  	}
-  	MyReadFile.close();
-  	
-  	//Add on fileContent the account variables
-  	fileContent = fileContent + a.returnString();
-  	
-  	//Write on file the fileContent
-  	ofstream MyWriteFile(fileName);
-	MyWriteFile << fileContent;
-	MyWriteFile.close();
-	
-	//Remove .txt from fileName so I can use viewAccounts function again cause viewAccounts adds .txt at the end of fileName
-	if (!fileName.empty()) {
-        fileName.resize(fileName.size() - 4);
-    }
-    cout<<"\n";
-    viewAccounts(fileName);
+			
+			if (n == 3){
+				cout << "\nSet your password :";
+				cout << "\n> ";
+				cin >> accountPassword;
+				a.setPassword(accountPassword);
+				cout<<"\nDo you wish to keep this password : " << a.getPassword();
+				cout<<"\n1. Yes 2. No";
+				cout<<"\n> ";
+				cin >> n;
+			}
+		}while(n != 1 );
+		
+		cout<<"\nAny more info :";
+		cout<<"\n> ";
+		cin >> accountInfo;
+		a.setInfo(accountInfo);
+		
+		//Read from file and copy its contents on fileContent string
+		fileName = fileName + ".txt";
+		ifstream MyReadFile(fileName);
+		string myText;
+		string fileContent;
+		while (getline (MyReadFile, myText)) {
+	   		 fileContent = fileContent + myText +"\n";
+	  	}
+	  	MyReadFile.close();
+	  	
+	  	//Add on fileContent the account variables
+	  	fileContent = fileContent + a.returnString();
+	  	
+	  	//Write on file the fileContent
+	  	ofstream MyWriteFile(fileName);
+		MyWriteFile << fileContent;
+		MyWriteFile.close();
+		
+		//Remove .txt from fileName so I can use viewAccounts function again cause viewAccounts adds .txt at the end of fileName
+		if (!fileName.empty()) {
+	        fileName.resize(fileName.size() - 4);
+	    }
+	    cout<<"\n";
+	    viewAccounts(fileName);
 }
+	else{
+		cout<<"\nAccount name already exists.";
+	}
+	
+}
+
 
 void about(){
 	cout << "\n\n";
@@ -298,8 +326,9 @@ void menu(){
 	while(flag != false){
         cout <<"\n\n**************** PASSWORD MANAGER ****************\n";
         cout <<"\n\t=========== MENU ===========";
-        cout <<"\n\t1. View Accounts \n\t2. Add Account \n\t3. Edit Account \n\t4. Remove Account \n\t5. About \n\t6. Exit";
-        cout<<"\n\t>";
+        //cout <<"\n\t1. View Accounts \n\t2. Add Account \n\t3. Edit Account \n\t4. Remove Account \n\t5. About \n\t6. Exit";
+	cout <<"\n\t1. View Accounts \n\t2. Add Account \n\t3. About \n\t4. Exit";
+        cout<<"\n\t> ";
         cin >>  choice;
 
         switch (choice){
@@ -313,16 +342,16 @@ void menu(){
             case 2:
                 addAccount(a1);
                 break;
-            case 3:
+            /*case 3:
                 cout<<"\nComing soon!\n\n";
                 break;
             case 4:
             	cout<<"\nComing soon!\n\n";
-                break;
-            case 5:
+                break;*/
+            case 3:
             	about();
                 break;
-            case 6:
+            case 4:
             	flag = false;
                 break;
             default:
