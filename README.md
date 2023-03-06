@@ -1,2 +1,2 @@
 # Password-Manager
-A simple password manager.
+An easy-to-use password manager with the ability to store, generate and edit passwords for multiple accounts.
