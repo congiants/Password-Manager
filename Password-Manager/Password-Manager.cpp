@@ -183,19 +183,29 @@ void createTxtFile(string fileName){
 
 //Takes input the name of a txt file (i.e. testFile) and showcases the files content
 void viewAccounts(string fileName){
-	cout << "=========== " << fileName << " Contents =========== \n\n";
 	
-	fileName = fileName + ".txt";
-	
-	//Goes line by line in the file and prints what is written
-	ifstream MyReadFile(fileName);
-	string myText;
-	string fileContent;
-	while (getline (MyReadFile, myText)) {
-   		fileContent = fileContent + myText +"\n";
-  	}
-    cout<<fileContent;
-    cout<<"\n";
+	//Checks if file exists
+	ifstream file(fileName + ".txt");
+	if (file.is_open()) {
+		file.close();
+		
+		cout << "=========== " << fileName << " Contents =========== \n\n";
+		
+		fileName = fileName + ".txt";
+		
+		//Goes line by line in the file and prints what is written
+		ifstream MyReadFile(fileName);
+		string myText;
+		string fileContent;
+		while (getline (MyReadFile, myText)) {
+	   		fileContent = fileContent + myText +"\n";
+	  	}
+	    cout<<fileContent;
+	    cout<<"\n";
+	}
+	else{
+		cout << "\nNo such file found. \n";
+	}
 }
 
 //Auxiliary function that shows if a string exists in a txt file
@@ -211,10 +221,10 @@ bool findStringInFile(string filename, string str) {
             }
         }
         file.close();
-    } else {
-        cout << "Unable to open file." << endl;
     }
-
+	else{
+		//cout << "\nUnable to open file.";
+	}
     return false;
 }
 
@@ -277,7 +287,7 @@ void addAccount(Account a){
 		string myText;
 		string fileContent;
 		while (getline (MyReadFile, myText)) {
-	   		 fileContent = fileContent + myText +"\n";
+	   		fileContent = fileContent + myText +"\n";
 	  	}
 	  	MyReadFile.close();
 	  	
@@ -352,24 +362,37 @@ void removeAccount(Account a){
 	cout<<"\n> ";
 	cin >> fileName;
 	cout<<"\n";
-	viewAccounts(fileName);
-	cout<<"\nAccount name (For example 'Facebook') :";
-	cout<<"\n> ";
-	cin >> accountName;
-	string txtLine = "Account Name : " + accountName;
-	string txtFileName = fileName + ".txt";
-	//If there isnt an account with the same name then proceed
-	if (findStringInFile(txtFileName, txtLine) == true){
-		deleteLines(txtFileName, txtLine);
-		cout<<"\n";
+	
+	//Checks if file exists
+	ifstream file(fileName + ".txt");
+	if (file.is_open()) {
+		file.close();
+		
+		//Shows all acounts
 		viewAccounts(fileName);
+		//Choose which account should be deleted
+		cout<<"\nAccount name (For example 'Facebook') :";
+		cout<<"\n> ";
+		cin >> accountName;
+		string txtLine = "Account Name : " + accountName;
+		string txtFileName = fileName + ".txt";
+		//If there isnt an account with the same name then proceed
+		if (findStringInFile(txtFileName, txtLine) == true){
+			deleteLines(txtFileName, txtLine);
+			cout<<"\n";
+			viewAccounts(fileName);
+		}
+		else{
+			cout<< "\nNo such account to delete. \n";
+		}	
 	}
+	
 	else{
-		cout<< "\nNo such account to delete. \n";
+		cout << "\nNo such file found. \n";
 	}
 }
 
-bool swapLines(string filename, string str, string str1) {
+bool swapLines(string filename, string str, string str1, string str2, string str3, string str4, string str5) {
     ifstream inFile(filename);
     ofstream outFile("temp.txt");
     string line;
@@ -379,10 +402,7 @@ bool swapLines(string filename, string str, string str1) {
     while (getline(inFile, line)) {
         if (line.find(str) != string::npos) {
             foundString = true;
-
-            // Write the 4 new strings to the output file
-            outFile << str1 << endl;
-
+			
             // Skip current and next 3 lines
             for (int i = 0; i < 4; i++) {
                 if (getline(inFile, line)) {
@@ -391,11 +411,20 @@ bool swapLines(string filename, string str, string str1) {
                     break;
                 }
             }
-        } else {
+            
+            // Write the 4 new strings to the output file
+        	outFile << str1 << endl;
+        	outFile << str2 << endl;
+        	outFile << str3 << endl;
+        	outFile << str4 << endl;
+        	outFile << str5 << endl;
+        }
+		 
+		else {
             outFile << line << endl;
         }
     }
-
+    
     inFile.close();
     outFile.close();
 
@@ -422,55 +451,75 @@ void editAccount(Account a){
 	cout<<"\n> ";
 	cin >> fileName;
 	cout<<"\n";
-	viewAccounts(fileName);
-	cout<<"\nAccount name (For example 'Facebook') :";
-	cout<<"\n> ";
-	cin >> accountName;
-	string txtLine = "Account Name : " + accountName;
-	string txtFileName = fileName + ".txt";
-	//If there is an account with the same name then proceed
-	if (findStringInFile(txtFileName, txtLine) == true){	
-		cout<<"\nNew account email or phone number : ";
-		cin >> accountName;
-		a.setName(accountName);
-		cout<<"\nNew Account email or phone number : ";
-		cout<<"\n> ";
-		cin >> accountEmail;
-		a.setEmail(accountEmail);
+	
+	//Checks if file exists
+	ifstream file(fileName + ".txt");
+	if (file.is_open()) {
+		file.close();
 		
-		int n = 0;
-		do{
-			a.setPassword(a.passwordGenerator());
-			cout<<"\nDo you wish to keep this password : " << a.getPassword();
-			cout<<"\n1. Yes 2. No 3. Set your own password";
+		//Shows all accounts in file
+		viewAccounts(fileName);
+		cout<<"\nAccount name (For example 'Facebook') :";
+		cout<<"\n> ";
+		cin >> accountName;
+		string txtLine = "Account Name : " + accountName;
+		string txtFileName = fileName + ".txt";
+		//If there is an account with the same name then proceed
+		if (findStringInFile(txtFileName, txtLine) == true){	
+			cout<<"\nNew account name : ";
 			cout<<"\n> ";
-			cin >> n;
+			cin >> accountName;
+			a.setName(accountName);
+			cout<<"\nNew Account email or phone number : ";
+			cout<<"\n> ";
+			cin >> accountEmail;
+			a.setEmail(accountEmail);
 			
-			if (n == 3){
-				cout << "\nSet your password :";
-				cout << "\n> ";
-				cin >> accountPassword;
-				a.setPassword(accountPassword);
+			int n = 0;
+			do{
+				a.setPassword(a.passwordGenerator());
 				cout<<"\nDo you wish to keep this password : " << a.getPassword();
-				cout<<"\n1. Yes 2. No";
+				cout<<"\n1. Yes 2. No 3. Set your own password";
 				cout<<"\n> ";
 				cin >> n;
-			}
-		}while(n != 1 );
-		
-		cout<<"\nAny more info :";
-		cout<<"\n> ";
-		cin >> accountInfo;
-		a.setInfo(accountInfo);
-		
-		string str = "Account Name : " + accountName;
-		string str1 = a.returnString();
-		swapLines(txtFileName, str, str1);
-		cout<<"\n";
-		viewAccounts(fileName);
+				
+				if (n == 3){
+					cout << "\nSet your password :";
+					cout << "\n> ";
+					cin >> accountPassword;
+					a.setPassword(accountPassword);
+					cout<<"\nDo you wish to keep this password : " << a.getPassword();
+					cout<<"\n1. Yes 2. No";
+					cout<<"\n> ";
+					cin >> n;
+				}
+			}while(n != 1 );
+			
+			cout<<"\nAny more info :";
+			cout<<"\n> ";
+			cin >> accountInfo;
+			a.setInfo(accountInfo);
+			
+			string str1 = "Account Name : " + accountName;
+			string str2 = "Account Email/Phone : " + accountEmail;
+			string str3 = "Account Password : " + a.getPassword();
+			string str4 = "Account Info : " + accountInfo;
+			string str5 = "================";
+			cout << str1;
+			cout << str2;
+			cout << str3;
+			cout << str4;
+			cout << str5;
+			swapLines(txtFileName, txtLine, str1, str2, str3, str4, str5);
+			cout<<"\n";
+			viewAccounts(fileName);
+		}
+		else{
+			cout<< "\nNo such account to edit. \n";
+		}
 	}
 	else{
-		cout<< "\nNo such account to edit. \n";
+		cout << "\nNo such file found. \n";
 	}
 }
 
