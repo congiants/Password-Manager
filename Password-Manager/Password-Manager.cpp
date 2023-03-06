@@ -182,29 +182,56 @@ void createTxtFile(string fileName){
 }
 
 //Takes input the name of a txt file (i.e. testFile) and showcases the files content
-void viewAccounts(string fileName){
+void viewAccounts(string fileName, bool newFile){
 	
-	//Checks if file exists
-	ifstream file(fileName + ".txt");
-	if (file.is_open()) {
-		file.close();
-		
-		cout << "=========== " << fileName << " Contents =========== \n\n";
-		
-		fileName = fileName + ".txt";
-		
-		//Goes line by line in the file and prints what is written
-		ifstream MyReadFile(fileName);
-		string myText;
-		string fileContent;
-		while (getline (MyReadFile, myText)) {
-	   		fileContent = fileContent + myText +"\n";
-	  	}
-	    cout<<fileContent;
-	    cout<<"\n";
+	if(newFile == true){
+		//Checks if file exists
+		ifstream file(fileName + ".txt");
+		if (file.is_open()) {
+			file.close();
+			
+			cout << "=========== " << fileName << " Contents =========== \n\n";
+			
+			fileName = fileName + ".txt";
+			
+			//Goes line by line in the file and prints what is written
+			ifstream MyReadFile(fileName);
+			string myText;
+			string fileContent;
+			while (getline (MyReadFile, myText)) {
+		   		fileContent = fileContent + myText +"\n";
+		  	}
+		    cout<<fileContent;
+		    cout<<"\n";
+			}
+		else{
+			cout << "\nCreating new file... \n";
+		}
 	}
+	
 	else{
-		cout << "\nNo such file found. \n";
+		//Checks if file exists
+		ifstream file(fileName + ".txt");
+		if (file.is_open()) {
+			file.close();
+			
+			cout << "=========== " << fileName << " Contents =========== \n\n";
+			
+			fileName = fileName + ".txt";
+			
+			//Goes line by line in the file and prints what is written
+			ifstream MyReadFile(fileName);
+			string myText;
+			string fileContent;
+			while (getline (MyReadFile, myText)) {
+		   		fileContent = fileContent + myText +"\n";
+		  	}
+		    cout<<fileContent;
+		    cout<<"\n";
+			}
+		else{
+			cout << "\nNo such file found. \n";
+		}
 	}
 }
 
@@ -235,13 +262,22 @@ void addAccount(Account a){
 	string accountEmail;
 	string accountPassword;
 	string accountInfo;
+	bool newFile = true;
 	
 	//Input of the account variables
 	cout<<"\nFile name (For example 'fileName'):";
 	cout<<"\n> ";
 	cin >> fileName;
 	cout<<"\n";
-	viewAccounts(fileName);
+	
+	//Checks if file exists
+	ifstream file(fileName + ".txt");
+	if (file.is_open()) {
+		file.close();
+		newFile = false;
+	}
+	
+	viewAccounts(fileName, newFile);
 	
 	cout<<"\nAccount name (For example 'Facebook') :";
 	cout<<"\n> ";
@@ -304,7 +340,7 @@ void addAccount(Account a){
 	        fileName.resize(fileName.size() - 4);
 	    }
 	    cout<<"\n";
-	    viewAccounts(fileName);
+	    viewAccounts(fileName, newFile);
 }
 	else{
 		cout<<"\nAccount name already exists. \n";
@@ -369,7 +405,7 @@ void removeAccount(Account a){
 		file.close();
 		
 		//Shows all acounts
-		viewAccounts(fileName);
+		viewAccounts(fileName, false);
 		//Choose which account should be deleted
 		cout<<"\nAccount name (For example 'Facebook') :";
 		cout<<"\n> ";
@@ -380,7 +416,7 @@ void removeAccount(Account a){
 		if (findStringInFile(txtFileName, txtLine) == true){
 			deleteLines(txtFileName, txtLine);
 			cout<<"\n";
-			viewAccounts(fileName);
+			viewAccounts(fileName, false);
 		}
 		else{
 			cout<< "\nNo such account to delete. \n";
@@ -458,7 +494,7 @@ void editAccount(Account a){
 		file.close();
 		
 		//Shows all accounts in file
-		viewAccounts(fileName);
+		viewAccounts(fileName, false);
 		cout<<"\nAccount name (For example 'Facebook') :";
 		cout<<"\n> ";
 		cin >> accountName;
@@ -512,7 +548,7 @@ void editAccount(Account a){
 			cout << str5;
 			swapLines(txtFileName, txtLine, str1, str2, str3, str4, str5);
 			cout<<"\n";
-			viewAccounts(fileName);
+			viewAccounts(fileName, false);
 		}
 		else{
 			cout<< "\nNo such account to edit. \n";
@@ -542,6 +578,8 @@ void menu(){
     bool flag = true;
     string fileName;
     Account a1;
+    bool newFile = false;
+    ifstream file;
     
 	while(flag != false){
         cout <<"\n\n**************** PASSWORD MANAGER ****************\n";
@@ -555,8 +593,14 @@ void menu(){
             	cout<<"\nFile name :";
 				cout<<"\n> ";
 				cin >> fileName;
-				cout<<"\n";				
-				viewAccounts(fileName);
+				cout<<"\n";
+				//Checks if file exists
+				file.open(fileName + ".txt");
+				if (file.is_open()) {
+					file.close();
+					newFile = false;
+				}				
+				viewAccounts(fileName, newFile);
                 break;
             case 2:
                 addAccount(a1);
